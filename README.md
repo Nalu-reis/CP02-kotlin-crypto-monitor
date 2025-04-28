@@ -31,7 +31,13 @@ Além disso, o projeto também apresenta:
 
 ## 3. Estrutura de Pacotes
 
-src/main/java/com/github/nalu_reis/cp02_cripto_monitor/ ├── model/ │ └── TickerResponse.kt ├── service/ │ ├── MercadoBitcoinService.kt │ └── MercadoBitcoinServiceFactory.kt └── MainActivity.kt
+src/main/java/com/github/nalu_reis/cp02_cripto_monitor/ 
+├── model/ │ 
+|    └── TickerResponse.kt 
+├── service/ │ 
+|   ├── MercadoBitcoinService.kt 
+|   └── MercadoBitcoinServiceFactory.kt     
+└── MainActivity.kt
 
 
 - `model/` → Define o modelo de dados recebido da API.
