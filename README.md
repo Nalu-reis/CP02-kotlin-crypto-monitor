@@ -1,71 +1,48 @@
-Crypto Monitor - Consumo de API em Kotlin
+# Crypto Monitor - Consumo de API em Kotlin
 
-1. Descrição Geral
-Este projeto é um app Android desenvolvido em Kotlin que realiza o consumo da API do MercadoBitcoin para exibir o valor atual e a data/hora da última cotação do Bitcoin.
+## 1. Descrição Geral
+Este projeto é um app Android desenvolvido em Kotlin que realiza o consumo da API do MercadoBitcoin para exibir o **valor atual** e a **data/hora da última cotação** do Bitcoin.
 
-O principal objetivo é demonstrar a utilização de kotlinx-coroutines para requisições assíncronas, junto com o Retrofit2 para comunicação com APIs REST, e o Gson para conversão de dados JSON.
+O principal objetivo é demonstrar a utilização de **kotlinx-coroutines** para requisições assíncronas, junto com o **Retrofit2** para comunicação com APIs REST, e o **Gson** para conversão de dados JSON.
 
 A interface apresenta dois estados:
+- Antes da atualização: campos de preço e data vazios.
+- Depois da atualização: campos preenchidos com as informações formatadas.
 
-Antes da atualização: campos de preço e data vazios.
-
-Depois da atualização: campos preenchidos com as informações formatadas.
-
-A atualização dos dados é feita quando o usuário clica no botão Refresh.
+A atualização dos dados é feita quando o usuário clica no botão **Refresh**.
 
 Além disso, o projeto também apresenta:
+- Formatação de valores para moeda brasileira (Real).
+- Conversão de timestamp Unix em uma data legível no formato **dd/MM/yyyy HH:mm:ss**.
+- Tratamento de exceções de rede e resposta de erro da API com mensagens amigáveis via **Toast**.
 
-Formatação de valores para moeda brasileira (Real).
+## 2. Ferramentas e Dependências
 
-Conversão de timestamp Unix em uma data legível no formato dd/MM/yyyy HH:mm:ss.
+- **Linguagem**: Kotlin
+- **Sistema de build**: Gradle
+- **Bibliotecas utilizadas**:
+  - `org.jetbrains.kotlinx:kotlinx-coroutines-android`
+  - `com.squareup.retrofit2:retrofit`
+  - `com.squareup.retrofit2:converter-gson`
+- **Outros recursos**:
+  - **Retrofit Builder Pattern** para configuração da instância da API.
+  - **View Binding** para manipulação de componentes da interface de forma segura (se usado).
+  - **Toast** para comunicação de erros e falhas de rede.
 
-Tratamento de exceções de rede e resposta de erro da API com mensagens amigáveis via Toast.
+## 3. Estrutura de Pacotes
 
-2. Ferramentas e Dependências
-Linguagem: Kotlin
+src/main/java/com/github/nalu_reis/cp02_cripto_monitor/ ├── model/ │ └── TickerResponse.kt ├── service/ │ ├── MercadoBitcoinService.kt │ └── MercadoBitcoinServiceFactory.kt └── MainActivity.kt
 
-Sistema de build: Gradle
 
-Bibliotecas utilizadas:
+- `model/` → Define o modelo de dados recebido da API.
+- `service/` → Contém a definição da API e a criação da instância Retrofit.
+- `MainActivity.kt` → Responsável pela interação com o usuário, atualização da interface e controle de requisições.
 
-org.jetbrains.kotlinx:kotlinx-coroutines-android
+## 4. Componentes Principais
 
-com.squareup.retrofit2:retrofit
-
-com.squareup.retrofit2:converter-gson
-
-Outros recursos:
-
-Retrofit Builder Pattern para configuração da instância da API.
-
-View Binding para manipulação de componentes da interface de forma segura (se usado).
-
-Toast para comunicação de erros e falhas de rede.
-
-3. Estrutura de Pacotes
-swift
-Copiar
-Editar
-src/main/java/com/github/nalu_reis/cp02_cripto_monitor/
-├── model/
-│   └── TickerResponse.kt
-├── service/
-│   ├── MercadoBitcoinService.kt
-│   └── MercadoBitcoinServiceFactory.kt
-└── MainActivity.kt
-model/ → Define o modelo de dados recebido da API.
-
-service/ → Contém a definição da API e a criação da instância Retrofit.
-
-MainActivity.kt → Responsável pela interação com o usuário, atualização da interface e controle de requisições.
-
-4. Componentes Principais
-4.1 TickerResponse.kt
+### 4.1 TickerResponse.kt
 Define o modelo de dados que representa a resposta da API.
 
-kotlin
-Copiar
-Editar
 class TickerResponse(val ticker: Ticker)
 
 class Ticker(
@@ -86,9 +63,6 @@ O campo date (timestamp Unix) é posteriormente convertido para uma data legíve
 4.2 MercadoBitcoinServiceFactory.kt
 Cria a configuração da instância do Retrofit para realizar as chamadas HTTP.
 
-kotlin
-Copiar
-Editar
 fun create(): MercadoBitcoinService {
     val retrofit = Retrofit.Builder()
         .baseUrl("https://www.mercadobitcoin.net/")
@@ -104,9 +78,6 @@ Usa o GsonConverterFactory para converter o JSON da resposta para os objetos Kot
 4.3 MercadoBitcoinService.kt
 Define o endpoint da API que será consumido.
 
-kotlin
-Copiar
-Editar
 interface MercadoBitcoinService {
     @GET("api/BTC/ticker/")
     suspend fun getTicker(): Response<TickerResponse>
@@ -118,9 +89,6 @@ O método é suspend, permitindo ser chamado dentro de coroutines sem bloquear a
 4.4 MainActivity.kt
 Controla a interação do usuário com a aplicação e a chamada da API.
 
-kotlin
-Copiar
-Editar
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -143,9 +111,6 @@ Exibe mensagens de erro apropriadas (por exemplo: 400 - Requisição inválida, 
 
 Exemplo de tratamento de sucesso:
 
-kotlin
-Copiar
-Editar
 val lastVal = ticker.last.toDoubleOrNull()
 lastVal?.let {
     findViewById<TextView>(R.id.lbl_value).text =
@@ -157,9 +122,6 @@ val formattedDate = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
 findViewById<TextView>(R.id.lbl_date).text = formattedDate
 Exemplo de tratamento de erro:
 
-kotlin
-Copiar
-Editar
 val msg = when (response.code()) {
     400 -> "Requisição inválida"
     401 -> "Não autorizado"
